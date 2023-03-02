@@ -1,5 +1,4 @@
 #include "symbole.h"
-#include <iostream>
 
 void Symbole::Affiche() {
    cout<<Etiquettes[ident];
@@ -13,5 +12,5 @@ void Entier::Affiche() {
 bool Symbole::isTerminal()
 {
    //Implémenter
-   return 0;
+   return 0; 
 }
