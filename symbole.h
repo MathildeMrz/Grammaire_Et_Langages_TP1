@@ -10,11 +10,13 @@ const string Etiquettes[] = { "OPENPAR", "CLOSEPAR", "PLUS", "MULT", "INT", "FIN
 
 class Symbole {
    public:
-      Symbole(int i) : ident(i) {  cout << "Symbole constructor " << endl; }
-      virtual ~Symbole() { }
+      Symbole(int i) : ident(i) {  //cout << "Symbole constructor " << endl;
+      }
+      virtual ~Symbole();
       operator int() const { return ident; }
       virtual void Affiche();
       bool isTerminal();
+      int getIdent();
 
    protected:
       int ident;
@@ -23,8 +25,8 @@ class Symbole {
 class Entier : public Symbole {
    public:
       Entier(int v) : Symbole(INT), valeur(v) { }
-      ~Entier() { }
-      virtual void Affiche();
+      ~Entier();
+      void Affiche();
    protected:
       int valeur;
 };
@@ -33,8 +35,8 @@ class Expr : public Symbole
 {
    public:
       Expr(int v) : Symbole(EXPR), valeur(v) { }
-      ~Expr() { }
-      virtual void Affiche();
+      ~Expr();
+      void Affiche();     
    protected:
       int valeur;
 };
@@ -43,46 +45,46 @@ class OpenPar : public Symbole
 {
    public:
       OpenPar() : Symbole(OPENPAR){ }
-      ~OpenPar() { }
-      virtual void Affiche();
+      ~OpenPar();
+      void Affiche();
 };
 
 class ClosePar : public Symbole
 {
    public:
       ClosePar() : Symbole(CLOSEPAR){ }
-      ~ClosePar() { }
-      virtual void Affiche();
+      ~ClosePar();
+      void Affiche();
 };
 
 class Plus : public Symbole
 {
    public:
       Plus() : Symbole(PLUS){ }
-      ~Plus() { }
-      virtual void Affiche();
+      ~Plus();
+      void Affiche();
 };
 
 class Mult : public Symbole
 {
    public:
       Mult() : Symbole(MULT){ }
-      ~Mult() { }
-      virtual void Affiche();
+      ~Mult();
+      void Affiche();
 };
 
 class Fin : public Symbole
 {
    public:
       Fin() : Symbole(FIN){ }
-      ~Fin() { }
-      virtual void Affiche();
+      ~Fin();
+      void Affiche();
 };
 
 class Erreur : public Symbole
 {
    public:
       Erreur() : Symbole(ERREUR){ }
-      ~Erreur() { }
-      virtual void Affiche();
+      ~Erreur();
+      void Affiche();
 };

@@ -18,7 +18,6 @@ class State {
         string name;
 };
 
-
 class E0 : public State 
 {
     public :      

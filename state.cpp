@@ -16,7 +16,15 @@ E9::E9(): State("E9"){}
 
 State::~State(){};
 
+void State::print() const
+{
+    cout << this->name << endl;
+}
+
+//La fonction de transition prend en entrée : 1 état initial, le symbole lu
+//                          renvoie en sortie : 1 état destination
 bool E0::transition(Automate & automate, Symbole * s) {
+    cout << "Transition de E0" << endl;
     switch (*s)
     {
         case OPENPAR : 
@@ -29,7 +37,7 @@ bool E0::transition(Automate & automate, Symbole * s) {
         
         case EXPR : 
              automate.decalage(s, new E1);
-            break;
+             break;
     }
     return false; 
 }
@@ -71,26 +79,27 @@ bool E2::transition(Automate & automate, Symbole * s) {
 
 
 bool E3::transition(Automate & automate, Symbole * s) {
+    cout << "Transition de E3" << endl;
     switch (*s)
     {
         case PLUS : 
-            //automate.reduction(1,new ExprPlus(s2,s1));
+            automate.reduction(1,new Plus());
             break;
 
         case MULT : 
-            //automate.reduction(3,new ExprPlus(s2,s1));
+            automate.reduction(1,new Mult());
             break;
 
         case CLOSEPAR : 
-            //automate.reduction(3,new ExprPlus(s2,s1));
+            automate.reduction(1,new ClosePar());
             break;
 
         case FIN : 
-            //automate.reduction(3,new ExprPlus(s2,s1));
+            automate.reduction(1,new Fin());
             break;
     }
     return false; 
-}//TODO
+}//TODO : vérifier si le symbole crée dans la reduction est le bon
 
 bool E4::transition(Automate & automate, Symbole * s) {
     switch (*s)
@@ -150,17 +159,59 @@ bool E7::transition(Automate & automate, Symbole * s) {
     
     switch (*s)
     {
+        case PLUS : 
+            automate.reduction(3,new Plus());
+            break;
         case MULT : 
             automate.decalage(s, new E5);
             break;
-
+        case CLOSEPAR : 
+            automate.reduction(3,new ClosePar());
+            break;
+        case FIN : 
+            automate.reduction(3,new Fin());
+            break;
     }
     return false; 
     
 }
 
-bool E8::transition(Automate & automate, Symbole * s) {return false;}
-bool E9::transition(Automate & automate, Symbole * s) {return false;}
+bool E8::transition(Automate & automate, Symbole * s) 
+{
+    switch (*s)
+    {
+        case PLUS : 
+            automate.reduction(3,new Plus());
+            break;
+        case MULT : 
+            automate.reduction(3,new Mult());
+            break;
+        case CLOSEPAR : 
+            automate.reduction(3,new ClosePar());
+            break;
+        case FIN : 
+            automate.reduction(3,new Fin());
+            break;
+    }
+    return false; 
+}//TODO : vérifier si le symbole crée dans la reduction est le bon
 
-//à terminer
-//OPENPAR, CLOSEPAR, PLUS, MULT, INT, FIN, ERREUR 
+bool E9::transition(Automate & automate, Symbole * s) 
+{
+    switch (*s)
+    {
+        case PLUS : 
+            automate.reduction(3,new Plus());
+            break;
+        case MULT : 
+            automate.reduction(3,new Mult());
+            break;
+        case CLOSEPAR : 
+            automate.reduction(3,new ClosePar());
+            break;
+        case FIN : 
+            automate.reduction(3,new Fin());
+            break;
+    }
+    return false; 
+}//TODO : vérifier si le symbole crée dans la reduction est le bon
