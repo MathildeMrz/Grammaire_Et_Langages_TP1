@@ -21,23 +21,24 @@ void State::print() const
     cout << this->name << endl;
 }
 
-//La fonction de transition prend en entrée : 1 état initial, le symbole lu
-//                          renvoie en sortie : 1 état destination
 bool E0::transition(Automate & automate, Symbole * s) {
-    cout << "Transition de E0" << endl;
     switch (*s)
     {
         case OPENPAR : 
-            automate.decalage(s, new E2);
+            automate.shift(s, new E2);            
             break;
 
         case INT :
-            automate.decalage(s, new E3);
+            automate.shift(s, new E3);
             break;
         
         case EXPR : 
-             automate.decalage(s, new E1);
+             automate.shift(s, new E1);
              break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);            
+            return true;
     }
     return false; 
 }
@@ -46,15 +47,19 @@ bool E1::transition(Automate & automate, Symbole * s) {
     switch (*s)
     {
         case PLUS : 
-            automate.decalage(s, new E4);
+            automate.shift(s, new E4);
             break;
 
         case MULT : 
-            automate.decalage(s, new E5);
+            automate.shift(s, new E5);
             break;
 
         case FIN : 
             return true;//Accepter
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            return true;
     }
     return false; 
 }
@@ -63,23 +68,26 @@ bool E2::transition(Automate & automate, Symbole * s) {
     switch (*s)
     {
         case INT : 
-            automate.decalage(s, new E3);
+            automate.shift(s, new E3);
             break;
 
         case OPENPAR : 
-            automate.decalage(s, new E2);
+            automate.shift(s, new E2);
             break;
 
         case EXPR : 
-            automate.decalage(s, new E6);
+            automate.shift(s, new E6);
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            return true;
     }
     return false; 
 }
 
 
 bool E3::transition(Automate & automate, Symbole * s) {
-    cout << "Transition de E3" << endl;
     switch (*s)
     {
         case PLUS : 
@@ -97,24 +105,33 @@ bool E3::transition(Automate & automate, Symbole * s) {
         case FIN : 
             automate.reduction(1,new Fin());
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            return true;
     }
     return false; 
-}//TODO : vérifier si le symbole crée dans la reduction est le bon
+}
 
 bool E4::transition(Automate & automate, Symbole * s) {
     switch (*s)
     {
         case OPENPAR : 
-            automate.decalage(s, new E2);
+            automate.shift(s, new E2);
             break;
 
         case INT : 
-            automate.decalage(s, new E3);
+            automate.shift(s, new E3);
             break;
 
         case EXPR : 
-            automate.decalage(s, new E7);
+            automate.shift(s, new E7);
             break;
+        
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            
+            return true;
     }
     return false; 
 }
@@ -123,16 +140,21 @@ bool E5::transition(Automate & automate, Symbole * s) {
     switch (*s)
     {
         case OPENPAR : 
-            automate.decalage(s, new E2);
+            automate.shift(s, new E2);
             break;
 
         case INT : 
-            automate.decalage(s, new E3);
+            automate.shift(s, new E3);
             break;
         
         case EXPR : 
-            automate.decalage(s, new E8);
+            automate.shift(s, new E8);
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            
+            return true;
     }
     return false; 
 }
@@ -141,29 +163,33 @@ bool E6::transition(Automate & automate, Symbole * s) {
     switch (*s)
     {
         case PLUS : 
-            automate.decalage(s, new E4);
+            automate.shift(s, new E4);
             break;
 
         case MULT : 
-            automate.decalage(s, new E5);
+            automate.shift(s, new E5);
             break;
 
         case CLOSEPAR : 
-            automate.decalage(s, new E9);
+            automate.shift(s, new E9);
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            
+            return true;
     }
     return false; 
 }
 
 bool E7::transition(Automate & automate, Symbole * s) { 
-    
     switch (*s)
     {
         case PLUS : 
             automate.reduction(3,new Plus());
             break;
         case MULT : 
-            automate.decalage(s, new E5);
+            automate.shift(s, new E5);
             break;
         case CLOSEPAR : 
             automate.reduction(3,new ClosePar());
@@ -171,6 +197,11 @@ bool E7::transition(Automate & automate, Symbole * s) {
         case FIN : 
             automate.reduction(3,new Fin());
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            
+            return true;
     }
     return false; 
     
@@ -192,9 +223,13 @@ bool E8::transition(Automate & automate, Symbole * s)
         case FIN : 
             automate.reduction(3,new Fin());
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            return true;
     }
     return false; 
-}//TODO : vérifier si le symbole crée dans la reduction est le bon
+}
 
 bool E9::transition(Automate & automate, Symbole * s) 
 {
@@ -212,6 +247,11 @@ bool E9::transition(Automate & automate, Symbole * s)
         case FIN : 
             automate.reduction(3,new Fin());
             break;
+
+        default : 
+            automate.shift(new Symbole(6), NULL);
+            
+            return true;
     }
     return false; 
-}//TODO : vérifier si le symbole crée dans la reduction est le bon
+}

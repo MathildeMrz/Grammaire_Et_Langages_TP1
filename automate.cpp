@@ -3,94 +3,112 @@
 
 Automate::Automate(string chaine)
 {
-    //cout << "Automate constructor " << endl;
     this->lexer = new Lexer(chaine);
-    E0 * startState = new E0();
-    stateStack.push_back(startState);
+    E0 * startingState = new E0();
+    stateStack.push_back(startingState);
 }
 
-bool Automate::analyse()
+Automate::~Automate()
 {
-    //Création d'un pointeur sur le symbole courant du mot à analyser
-    Symbole * s;
-
-    //Tant qu'on n'arrive pas à la fin du mot
-    while(*(s=this->lexer->Consulter())!=FIN) 
+    for(int i = 0; i < stateStack.size(); ++i)
     {
-        //Affichage du symbole courant. La tête de lecture a été incrémentée pour le prochain passage de la boucle while
-        s->Affiche();
-        cout<<endl;
-        this->lexer->Avancer();
+        delete this->stateStack.at(i);
+    }
 
-        cout << "----------------------stateStack----------------------" << endl;
-        for(int i = 0; i <stateStack.size(); ++i)
-        {
-            stateStack.at(i)->print();
-        }
+    for(int i = 0; i < symbolStack.size(); ++i)
+    {
+        delete this->symbolStack.at(i);
+    }
 
-        cout << "----------------------symbolStack----------------------" << endl;
-        for(int i = 0; i <symbolStack.size(); ++i)
-        {
-            cout << symbolStack.at(i)->getIdent();
-        }
-
-
-        //Transition entre l'état actuel et le symbole lu
-        stateStack.back()->transition(*(this), s);     
-
-        if(*s == ERREUR)
-        {
-            cout << "Syntaxe incorrecte : le mot n'existe pas" << endl;
-            return 0;
-        }   
-    }  
-
-    cout << "Syntaxe correcte : le mot existe" << endl;
-    return 1;
+    delete this->lexer;
 }
 
-//on est dans l'état e (qui n'est pas un puit) et on lit le symbole s
-void Automate::decalage(Symbole * s, State * e) 
-{    
-    //ajout du symbole et de l'état à leur pile respective
+int Automate::analyse()
+{
+    bool prochainEtat = false;
+
+    while(!prochainEtat)
+    {
+        Symbole *s = lexer->Consulter();
+        this->lexer->Avancer();
+        prochainEtat = stateStack.back()->transition(*this, s);       
+    } 
+    
+    if(*symbolStack.back() == ERREUR)
+    {
+        cout << "Incorrect syntex, the word doesn't exist" << endl;
+        return -1;
+    }   
+        
+    cout << "Correct syntax, the word exists : " << this->lexer->getFlux() << " = " << symbolStack.back()->getValue() << endl;
+    return symbolStack.back()->getValue();
+}
+
+void Automate::shift(Symbole * s, State * e) 
+{     
     symbolStack.push_back(s);
     stateStack.push_back(e);
-
-    /*if (s->isTerminal()) 
-    {
-        lexer->Avancer();
-    }*/
 }
 
-//s : symbole terminal qui vient d'être lu
 void Automate::reduction(int n, Symbole * s) 
 {
-    cout << "Réduction " << endl;
-    int ident = -1;
+    vector <Symbole *> unstackedSymboles;
 
-    //on dépile les n états
-    cout << "On dépile " << n << " états" << endl;
     for (int i=0;i<n;i++)
     {
-        if(i == 0)
-        {
-            ident = symbolStack.back()->getIdent();
-        }
-        cout << "Le symbole " << symbolStack.back()->getIdent() << " a été dépilé" << endl;
-        cout << "L'état ";
-        stateStack.back()->print();
-        cout << " a été dépilé" << endl;
-
-        delete(symbolStack.back());
-        symbolStack.pop_back();
-
         delete(stateStack.back());
         stateStack.pop_back();
+        unstackedSymboles.push_back(symbolStack.back());
+        symbolStack.pop_back();
+    }
 
-    }  
+    int lastsUnstacked = 0;
 
-    Symbole * transactionSymbole = new Symbole(ident);   
+    if(n == 1)
+    {
+        Entier * E = (Entier *) unstackedSymboles.back();
+        lastsUnstacked = ((Entier*)E)->getValue();
+    }
+    else if(n == 3)
+    {
+        if(*(unstackedSymboles.back()) == OPENPAR)
+        {
+            delete unstackedSymboles.back();
+            unstackedSymboles.pop_back();
+            Entier * E = (Entier *) unstackedSymboles.back();
+            lastsUnstacked = E->getValue();
+            delete E;
+        }
+        else
+        {
+            Entier * E = (Entier *) unstackedSymboles.back();
+            lastsUnstacked = E->getValue();
+            delete unstackedSymboles.back();
+            unstackedSymboles.pop_back();
 
-    //on applique la fonction de transition qui correspond à 
-    stateStack.back()->transition(*this,transactionSymbole);
+            if(*(unstackedSymboles.back()) == PLUS)
+            {
+                delete unstackedSymboles.back();
+                unstackedSymboles.pop_back();
+                Entier * E = (Entier *) unstackedSymboles.back();
+                lastsUnstacked = lastsUnstacked + E->getValue();     
+                delete E;           
+            }
+            else//MULT
+            {
+                delete unstackedSymboles.back();
+                unstackedSymboles.pop_back();
+                Entier * E = (Entier *) unstackedSymboles.back();
+                lastsUnstacked = (lastsUnstacked * E->getValue());  
+                delete E;         
+            }      
+        }
+    }
+     stateStack.back()->transition(*this,new Expr(lastsUnstacked));
+    lexer->saveReductionSymbol(s);
+}
+
+void Automate::setFlux(string flux)
+{
+    this->lexer->setFlux(flux);
 }

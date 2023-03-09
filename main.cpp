@@ -1,23 +1,20 @@
 #include <iostream>
-#include "automate.h"
+#include "test.h"
+#include <cassert>
 
 
-int main(void) {
-   //string chaine("(1+34)*123");
-   cout << "Quel est le mot à interpréter ? " << endl;
-   string chaine;
-   cin >> chaine;   
-   Automate * automate = new Automate(chaine);
+int main(void) 
+{
+   Test * tests = new Test();
+   //tests->runUnitTests();
+
+   cout << "What is the word to interpret ?" << endl;
+   string s;
+   cin >> s;
+
+   Automate * automate = new Automate(s);
    automate->analyse();
-   return 0;
 
-   /*vector<string> mots = {"1", "(1)", "1+1", "1*1", "1+1*1", "(1+1)*1"};
-
-   for (int i = 0; i < mots.size(); ++i) 
-   {
-      Automate * automate = new Automate(mots[i]);
-      automate->analyse();
-      delete automate;
-   }
-   return 0;*/
+   delete tests;
+   delete automate;
 }

@@ -10,13 +10,23 @@ Mult::~Mult(){};
 Fin::~Fin(){};
 Erreur::~Erreur(){};
 
-void Symbole::Affiche() {
-   cout<<Etiquettes[ident];
+int Symbole::getValue() 
+{ 
+   return -1;
 }
 
-int Symbole::getIdent()
-{
-   return this->ident;
+int Entier::getValue() 
+{ 
+   return valeur;
+}
+
+int Expr::getValue()
+{ 
+   return valeur;
+}
+
+void Symbole::Affiche() {
+   cout<<Etiquettes[ident];
 }
 
 void Entier::Affiche() {
@@ -58,15 +68,3 @@ void Erreur::Affiche() {
    Symbole::Affiche();
    cout<<"aaERREUR";//TODO à quoi ca sert??
 }
-
-bool Symbole::isTerminal()
-{
-   for(int i = 0; i < Etiquettes->length() ; ++i)
-   {
-      if(this->ident == EXPR)
-      {
-            return false;
-      }
-   }
-   return true; 
-}//TODO : vérifier je suis pas sûre

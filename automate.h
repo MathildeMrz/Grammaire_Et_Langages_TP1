@@ -12,10 +12,12 @@ using namespace std;
 class Automate {
 
     public :     
-        Automate(string chaine);   
-        void decalage(Symbole * s, State * e);
+        Automate(string chaine);
+        ~Automate(); 
+        void shift(Symbole * s, State * e);
         void reduction(int n,Symbole * s);
-        bool analyse();
+        void setFlux(string flux);
+        int analyse();
         
     private :
         vector <State*> stateStack;

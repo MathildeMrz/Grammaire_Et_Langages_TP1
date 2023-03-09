@@ -1,18 +1,27 @@
 #include <iostream>
 #include "lexer.h"
 
-Symbole * Lexer::Consulter() {
-   if (!tampon) {
-      //on a parcouru tous les symboles du flux à analyser
+Lexer::~Lexer()
+{
+   delete tampon;
+}
+
+void Lexer::setFlux(string flux)
+{
+   this->flux = flux;
+}
+
+Symbole * Lexer::Consulter() 
+{  
+   if (!tampon) 
+   {
       if (tete==flux.length())
          tampon = new Symbole(FIN);
       else
       {
-         //Parcours du flux à analyser
          switch (flux[tete]) {
             case '(':
                tampon = new Symbole(OPENPAR);
-               //incrémentation pour le prochain symbole à analyser
                tete++;
                break;
             case ')':
@@ -28,7 +37,8 @@ Symbole * Lexer::Consulter() {
                tete++;
                break;
             default:
-               if (flux[tete]<='9' && flux[tete]>='0') {
+               if (flux[tete]<='9' && flux[tete]>='0') 
+               {
                   int resultat = flux[tete]-'0';
                   int i=1;
                   while (flux[tete+i]<='9' && flux[tete+i]>='0') {
@@ -47,7 +57,18 @@ Symbole * Lexer::Consulter() {
    return tampon;
 }
 
+void Lexer::saveReductionSymbol(Symbole *s) {
+   switch (*s) 
+   {
+      case PLUS:
+      case MULT:
+      case OPENPAR:
+      case CLOSEPAR:
+         tampon = s;
+         break;
+   }
+}
+
 void Lexer::Avancer() {
-   //La tête de lecture a déjà été incrémentée dans Consulter
    tampon = nullptr;
 }

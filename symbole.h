@@ -8,25 +8,26 @@ enum Identificateurs { OPENPAR, CLOSEPAR, PLUS, MULT, INT, FIN, ERREUR, EXPR };
 
 const string Etiquettes[] = { "OPENPAR", "CLOSEPAR", "PLUS", "MULT", "INT", "FIN", "ERREUR", "EXPR" };
 
-class Symbole {
+class Symbole 
+{
    public:
-      Symbole(int i) : ident(i) {  //cout << "Symbole constructor " << endl;
-      }
+      Symbole(int i) : ident(i) { };
       virtual ~Symbole();
       operator int() const { return ident; }
       virtual void Affiche();
-      bool isTerminal();
-      int getIdent();
+      virtual int getValue();
 
    protected:
       int ident;
 };
 
-class Entier : public Symbole {
+class Entier : public Symbole 
+{
    public:
-      Entier(int v) : Symbole(INT), valeur(v) { }
+      Entier(int v) : Symbole(INT), valeur(v) {}
       ~Entier();
       void Affiche();
+      int getValue();
    protected:
       int valeur;
 };
@@ -36,7 +37,8 @@ class Expr : public Symbole
    public:
       Expr(int v) : Symbole(EXPR), valeur(v) { }
       ~Expr();
-      void Affiche();     
+      virtual void Affiche();   
+      int getValue();  
    protected:
       int valeur;
 };
