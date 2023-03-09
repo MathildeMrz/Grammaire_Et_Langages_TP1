@@ -1,5 +1,8 @@
-main : main.o lexer.o  automate.o symbole.o state.o
-	g++ -o automate main.o state.o lexer.o automate.o symbole.o 
+main : test.o main.o lexer.o  automate.o symbole.o state.o
+	g++ -o automate test.o main.o state.o lexer.o automate.o symbole.o 
+
+test.o: test.cpp
+	g++ -c test.cpp
 
 main.o: main.cpp
 	g++ -c main.cpp
