@@ -57,6 +57,13 @@ Symbole * Lexer::Consulter()
    return tampon;
 }
 
+void Lexer::resetLexer(string flux)
+{
+   tete=0;
+   tampon = nullptr;
+   setFlux(flux);
+}
+
 void Lexer::saveReductionSymbol(Symbole *s) {
    switch (*s) 
    {

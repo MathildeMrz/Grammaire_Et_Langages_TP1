@@ -22,7 +22,23 @@ Automate::~Automate()
 
     delete this->lexer;
 }
+void Automate::reset(string chaine)
+{
+    for(int i = 0; i < stateStack.size(); ++i)
+    {
+        this->stateStack.pop_back();
+    }
 
+    for(int i = 0; i < symbolStack.size(); ++i)
+    {
+        this->symbolStack.pop_back();
+    }
+
+    E0 * startingState = new E0();
+    stateStack.push_back(startingState);
+    this->lexer->resetLexer(chaine);
+
+}
 int Automate::analyse()
 {
     bool prochainEtat = false;
@@ -36,12 +52,14 @@ int Automate::analyse()
     
     if(*symbolStack.back() == ERREUR)
     {
-        cout << "Incorrect syntex, the word doesn't exist" << endl;
+        cout << "Incorrect syntax, the word doesn't exist" << endl;
         return -1;
     }   
         
     cout << "Correct syntax, the word exists : " << this->lexer->getFlux() << " = " << symbolStack.back()->getValue() << endl;
-    return symbolStack.back()->getValue();
+    int result = symbolStack.back()->getValue();
+
+    return result;
 }
 
 void Automate::shift(Symbole * s, State * e) 
@@ -104,7 +122,8 @@ void Automate::reduction(int n, Symbole * s)
             }      
         }
     }
-     stateStack.back()->transition(*this,new Expr(lastsUnstacked));
+    
+    stateStack.back()->transition(*this,new Expr(lastsUnstacked));
     lexer->saveReductionSymbol(s);
 }
 

@@ -14,6 +14,8 @@ class Lexer {
       void saveReductionSymbol(Symbole *s);
       string getFlux(){ return flux ;}
       void setFlux(string flux);
+      void resetLexer(string flux);
+
 
    protected:
       string flux;

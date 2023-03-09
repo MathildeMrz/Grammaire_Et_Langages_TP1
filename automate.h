@@ -18,6 +18,7 @@ class Automate {
         void reduction(int n,Symbole * s);
         void setFlux(string flux);
         int analyse();
+        void reset(string chaine);
         
     private :
         vector <State*> stateStack;
